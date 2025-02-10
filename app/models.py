@@ -1,3 +1,9 @@
 from django.db import models
+from ninja import Schema
 
-# Create your models here.
+
+class Employee(models.Model):
+    Name = models.CharField(max_length=50)
+    Employee_no = models.CharField(max_length=50)
+    Section = models.CharField(max_length=50)
+
