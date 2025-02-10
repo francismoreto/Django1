@@ -21,5 +21,5 @@ from app import urls as appurl
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    include('',appurl),
+    path('', include(appurl)),
 ]
