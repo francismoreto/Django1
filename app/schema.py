@@ -1,22 +1,22 @@
 from ninja import Schema
 
 class WorkerSchema(Schema):
-    Employee_id : str
+    employee_id : str
     first_name : str
     last_name : str
     username : str
 
-class Products(Schema):
+class ProductsSchema(Schema):
     item_code : str
-    Part_no : str
+    part_no : str
     process : str
     customer : str
     product_family : str
 
-class Worker_out(Schema):
+class WorkerOutputSchema(Schema):
     lot_no : str
     current_status : str
-    Out_data : str
+    output_data : str
 
 
 
