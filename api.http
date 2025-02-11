@@ -1,7 +1,6 @@
 ###
-
 curl -X POST 
-    https://potential-invention-4jv9w46gv7p7c7vgw-8000.app.github.dev/api/worker
+    http://127.0.0.1:8000/api/worker
 -H "Content-Type: application/json"
 -d '{
     "first_name": "francis",
