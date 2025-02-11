@@ -4,24 +4,23 @@ from ninja import Schema
 
 class Worker(models.Model):
     Employee_id = models.CharField(max_length=50)
-    first_name = models.CharField(max_lenght=25)
+    first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=20)
-    username = models
+    username = models.CharField(max_length=50)
 
-class lot(models.Model):
-    Worker = models.CharField (max_length=100)
-    lot_no = models.IntegerField
+class Products(models.Model):
+    item_code = models.CharField (max_length=100)
     Part_no = models.CharField(max_length=100)
-    Process = models.CharField(max_length=100)
-    Gd_qty = models.IntegerField
-    Ng_qty = models.IntegerField
-    Status = models.CharField(max_length=10)
+    process = models.CharField(max_length=100)
+    customer = models.CharField(max_length=40)
+    product_family = models.CharField(max_length=75)
 
-class Process(models.Model):
-    Worker = models.CharField(max_length=100)
-    Process = models.CharField(max_length=4)
-    Gd_qty = models.IntegerField
-    Ng_qty = models.IntegerField
-    Status = models.CharField(max_length=9)
+class Worker_out(models.Model):
+    lot_no = models.IntegerField(max_length=100)
+    current_status = models.CharField(max_length=20)
+    Out_data = models.JSONField()
+
+    
+
 
     
