@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
 from .models import Worker,Products,Worker_out
-from .schema import WorkerSchema, ProductsSchema, Worker_outSchema
+from .schema import WorkerSchema, ProductsSchema
 
 
 api = NinjaAPI()

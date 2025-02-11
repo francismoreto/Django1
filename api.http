@@ -1,0 +1,11 @@
+###
+
+curl -X POST 
+    https://potential-invention-4jv9w46gv7p7c7vgw-8000.app.github.dev/api/worker
+-H "Content-Type: application/json"
+-d '{
+    "first_name": "francis",
+    "last_name": "moreto",
+    "employee_id": "2111111",
+    "username" : "francis101"   
+}'
