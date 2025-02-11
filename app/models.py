@@ -16,7 +16,7 @@ class Products(models.Model):
     product_family = models.CharField(max_length=75)
 
 class Worker_out(models.Model):
-    lot_no = models.IntegerField(max_length=100)
+    lot_no = models.IntegerField
     current_status = models.CharField(max_length=20)
     Out_data = models.JSONField()
 
