@@ -8,10 +8,18 @@ class Worker(models.Model):
     last_name = models.CharField(max_length=20)
     username = models.CharField(max_length=50)
 
-class Products(models.Model):
+class Product(models.Model):
     item_code = models.CharField (max_length=100)
     part_no = models.CharField(max_length=100)
-    process = models.CharField(max_length=100)
+   
+    PROCESS_CHOICE = (
+    ('Step1', 'E151'),
+    ('Step2', 'E203'),
+    ('Step3', 'E208'),
+    ('Step4', 'E205'),
+    ('Step5', 'E201'),
+)
+    process = models.CharField(max_length=50, choices= PROCESS_CHOICE)
     customer = models.CharField(max_length=40)
     product_family = models.CharField(max_length=75)
 

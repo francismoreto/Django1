@@ -6,7 +6,7 @@ class WorkerSchema(Schema):
     last_name : str
     username : str
 
-class ProductsSchema(Schema):
+class ProductSchema(Schema):
     item_code : str
     part_no : str
     process : str
