@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
-from .models import Worker,Product
-from .schema import WorkerSchema,ProductSchema
+from .models import Worker,Product,Worker_out
+from .schema import WorkerSchema,ProductSchema,WorkerOutputSchema
 
 
 api = NinjaAPI()
@@ -49,6 +49,14 @@ def create_product(request, data: ProductSchema):
             "product_family": data.product_family
         }
 
+@api.post("/worker_out")
+def create_output(request, data :WorkerOutputSchema):
+    
+    Worker_out.objects.create(
+        lot_no = data.lot_no,
+        current_status = data.current_status,
+        output_data = data.output_data
+    )
     
     
    

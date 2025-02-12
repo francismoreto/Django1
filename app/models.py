@@ -26,7 +26,7 @@ class Product(models.Model):
 class Worker_out(models.Model):
     lot_no = models.IntegerField
     current_status = models.CharField(max_length=20)
-    output_data = models.JSONField()
+    output_data = models.JSONField(default=dict)
 
     
 
