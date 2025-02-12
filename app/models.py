@@ -3,7 +3,7 @@ from ninja import Schema
 
 
 class Worker(models.Model):
-    employee_id = models.CharField(max_length=50)
+    employee_id = models.CharField(max_length=50, primary_key= True)
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=20)
     username = models.CharField(max_length=50)
