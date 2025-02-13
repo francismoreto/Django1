@@ -1,11 +1,13 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
 from .models import Worker,Product,WorkerOutput
-from .schema import WorkerSchema,codes
+from .schema import WorkerSchema,codes,ProductSchema,WorkerOutputSchema
 
 
 api = NinjaAPI()
 
+
+#Worker input data
 @api.post("/worker")
 def create_worker(request, data: WorkerSchema):
     if Worker.objects.filter(employee_id=data.employee_id).exists():
@@ -28,16 +30,16 @@ def create_worker(request, data: WorkerSchema):
 
 
 
-
+#Product input data
 @api.post("/product")
 def create_product(request, data: ProductSchema):   
-    Product.objects.create(
+    Product.objects.create(             #Setting up where the user would input
         item_code = data.item_code,
         part_no = data.part_no,
         customer = data.customer,
         product_family = data.product_family
         )
-
+    #Response body after storing the data for products
     return {"message": "Product successfully stored",
             "item_code": data.item_code,
             "part_no": data.part_no,
@@ -45,19 +47,18 @@ def create_product(request, data: ProductSchema):
             "customer": data.customer,
             "product_family": data.product_family
         }
+#JSONfield process indicated here
 def create_process(request, procedure: codes):
     
-    if new_procedure.completed:
-        return("messsage":"Process installation complete")
-    if new_procedure
+    if new_procedure:
     
        if new_procedure.current_step == 1:
         # Process user information
-        if user_info:
-            # Here you would save the user information
+        if Product:
+            # Here you would save the process procedure
             new_procedure.current_step += 1  # Move to the next step
         else:
-            return {"message": "User information is required to proceed."}
+            return {"message": "Information for process must not be blank"}
 
     elif new_procedure.current_step == 2:
         # Verify user information (this is just a placeholder)
@@ -74,21 +75,23 @@ def create_process(request, procedure: codes):
         new_procedure.completed = True
         new_procedure.current_step += 1  # Move to the next step (optional)
 
-    # Save the onboarding process
+    # Procedure for process save
     new_procedure.save()
 
-    # Check if the onboarding is completed
-    if new_procedure.completed:
-        return {"message": "Onboarding completed successfully."}
-    
-    if new_procedure.completed:
-        return("messsage":"Process installation complete")
-    
     new_procedure = Product.object.create(
-        process = {'process code': 'E151',
-                 'process name': 'Winding wire'
+        process = {"item number":{'process code': 'E151',
+                 'process name': 'Winding Process'}
          }
     )
+    #Procedure process finished   
+    if new_procedure.completed:
+        return{"messsage":"Process installation complete"}
+    
+    return {
+        "message": "Process is still in progress.",
+        "current_step": new_procedure.current_step,
+        "completed": new_procedure.completed
+    }
     
 
 @api.post("/")
