@@ -15,13 +15,14 @@ class Product(models.Model):
     customer = models.CharField(max_length=40)
     product_family = models.CharField(max_length=75)
 
+
 class WorkerOutput(models.Model):
     lot_no = models.IntegerField()
 
     STATUS_CHOICE = [("ongoing","Ongoing"),("onhold","On Hold"),("finished","Finished")]
 
     current_status = models.CharField(max_length=20, choices= STATUS_CHOICE)
-    output_data = models.JSONField(default=dict)
+    output_data = models.JSONField()
 
     
 

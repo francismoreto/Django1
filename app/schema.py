@@ -14,6 +14,10 @@ class ProductSchema(Schema):
     customer : str
     product_family : str
 
+class codes(Schema):
+    process_code: str
+    process_name: str
+
 class StaticData(Schema):
     employee_id: str
     item_code : str
