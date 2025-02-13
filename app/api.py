@@ -39,14 +39,12 @@ def create_product(request, data: ProductSchema):
         customer = data.customer,
         product_family = data.product_family
         )
-    #Response body after storing the data for products
-    return {"message": "Product successfully stored",
+    return{"message": "Product successfully stored",
             "item_code": data.item_code,
             "part_no": data.part_no,
             "process": data.process,
             "customer": data.customer,
-            "product_family": data.product_family
-        }
+            "product_family": data.product_family}
 #JSONfield process indicated here
 def create_process(request, procedure: codes):
     
@@ -94,7 +92,6 @@ def create_process(request, procedure: codes):
     }
     
 
-@api.post("/")
 
 @api.post("/worker-output")
 def create_output(request, data :WorkerOutputSchema):
