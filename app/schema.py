@@ -1,4 +1,5 @@
 from ninja import Schema
+from datetime import datetime
 
 class WorkerSchema(Schema):
     employee_id : str
@@ -13,8 +14,22 @@ class ProductSchema(Schema):
     customer : str
     product_family : str
 
+class StaticData(Schema):
+    employee_id: str
+    item_code : str
+    process_code: str
+    process_name: str
+
+class DynamicData(Schema):
+    lot_quantity: int
+    good_quantity: int
+    defect_quantity: int
+
+class timestamp():
+    datetime_start: datetime
+    datetime_end: datetime    
 class WorkerOutputSchema(Schema):
-    lot_no : str
+    lot_no : int
     current_status : str
     output_data : str
 

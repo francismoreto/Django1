@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Worker, Product
+from .models import Worker, Product, WorkerOutput
 # Register your models here.
 
 class WorkerAdmin(admin.ModelAdmin):
@@ -12,4 +12,5 @@ class ProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Worker, WorkerAdmin)
 admin.site.register(Product, ProductAdmin)
+admin.site.register(WorkerOutput)
 

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
-from .models import Worker,Product,Worker_out
+from .models import Worker,Product,WorkerOutput
 from .schema import WorkerSchema,ProductSchema,WorkerOutputSchema
 
 
@@ -25,14 +25,12 @@ def create_worker(request, data: WorkerSchema):
     except Exception as e:
         return {"error": str(e)}
 
-@api.post("/product")
-def create_product(request, data: ProductSchema):
-    
-    valid_code = [choice[0] for choice in Product.PROCESS_CHOICE]
 
-    if data.process not in valid_code:
-        return{"error": f"Invalid process code: {data.process}. Must be one of {valid_code}."}
-    
+@api.post("/process")
+def create_process(request, data: process )
+
+@api.post("/product")
+def create_product(request, data: ProductSchema):   
     Product.objects.create(
         item_code = data.item_code,
         part_no = data.part_no,
@@ -49,15 +47,22 @@ def create_product(request, data: ProductSchema):
             "product_family": data.product_family
         }
 
-@api.post("/worker_out")
+@api.post("/")
+
+@api.post("/worker-output")
 def create_output(request, data :WorkerOutputSchema):
     
-    Worker_out.objects.create(
+
+    WorkerOutput.objects.create(
         lot_no = data.lot_no,
         current_status = data.current_status,
         output_data = data.output_data
     )
-    
+    return {"message": "Data added successfully",
+            "lot_no": data.lot_no,
+            "current_status": data.current_status,
+            "output_data": data.output_data,
+        }
     
    
 

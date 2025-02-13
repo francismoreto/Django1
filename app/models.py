@@ -11,22 +11,19 @@ class Worker(models.Model):
 class Product(models.Model):
     item_code = models.CharField (max_length=100)
     part_no = models.CharField(max_length=100)
-   
-    PROCESS_CHOICE = (
-    ('Step1', 'E151'),
-    ('Step2', 'E203'),
-    ('Step3', 'E208'),
-    ('Step4', 'E205'),
-    ('Step5', 'E201'),
-)
-    process = models.CharField(max_length=50, choices= PROCESS_CHOICE)
+    process = models.JSONField()
     customer = models.CharField(max_length=40)
     product_family = models.CharField(max_length=75)
 
-class Worker_out(models.Model):
-    lot_no = models.IntegerField
-    current_status = models.CharField(max_length=20)
+class WorkerOutput(models.Model):
+    lot_no = models.IntegerField()
+
+    STATUS_CHOICE = [("ongoing","Ongoing"),("onhold","On Hold"),("finished","Finished")]
+
+    current_status = models.CharField(max_length=20, choices= STATUS_CHOICE)
     output_data = models.JSONField(default=dict)
+
+    
 
     
 
