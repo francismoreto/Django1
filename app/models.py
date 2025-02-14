@@ -11,7 +11,7 @@ class Worker(models.Model):
 class Product(models.Model):
     item_code = models.CharField (max_length=100)
     part_no = models.CharField(max_length=100)
-    process = models.JSONField()
+    process = models.JSONField(default= dict)
     customer = models.CharField(max_length=40)
     product_family = models.CharField(max_length=75)
 
