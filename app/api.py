@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
 from .models import Worker,Product,WorkerOutput
-from .schema import WorkerSchema,codes,ProductSchema,WorkerOutputSchema
+from .schema import WorkerSchema,ProductSchema,WorkerOutputSchema
 
 
 api = NinjaAPI()
@@ -94,10 +94,9 @@ def create_product(request, data: ProductSchema):
             break
 
     if not part_found:
-        return {"message": "Part number not found."}, 404  # Return a tuple with status code 404
+        return {"message": "Part number not found."}
 
     # Validate process codes from the incoming data
-    # If `data.process` is a list of dictionaries, we need to extract the 'process_code' field first
     process_codes_to_validate = []
 
     if isinstance(data.process, list):
@@ -114,31 +113,33 @@ def create_product(request, data: ProductSchema):
     # Now check for invalid process codes
     invalid_process_codes = [code for code in process_codes_to_validate if code not in process_code_mapping]
     if invalid_process_codes:
-        # Ensure all invalid process codes are strings before joining them
         invalid_process_codes_str = [str(code) for code in invalid_process_codes]
-        return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}, 400  # Return a tuple with status code 400
+        return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}  # No status code
 
     # Populate the process list with code and name
-    process = [{"process_code": code, "process_name": process_code_mapping[code]} for code in process_codes_to_validate]
+    process = [{"process_code": code, "process_name": process_code_mapping[code]} for code in process_codes]
 
-    # Create the product object
-    Product.objects.create(
-        item_code=data.item_code,
-        part_no=data.part_no,
-        process=process,  # Use the validated process codes with names
-        customer=data.customer,
-        product_family=data.product_family,
-    )
+    try:
+        # Create the product object
+        Product.objects.create(
+            item_code=data.item_code,
+            part_no=data.part_no,
+            process=process,  # Use the validated process codes with names
+            customer=data.customer,
+            product_family=data.product_family,
+        )
+        return {
+            "message": "Product successfully stored",
+            "item_code": data.item_code,
+            "part_no": data.part_no,
+            "process": process,
+            "customer": data.customer,
+            "product_family": data.product_family
+        }  # No status code
 
-    # Return the success message and status code 201
-    return {
-        "message": "Product successfully stored",
-        "item_code": data.item_code,
-        "part_no": data.part_no,
-        "process": process,
-        "customer": data.customer,
-        "product_family": data.product_family
-    }, 201  # Return a tuple with status code 201
+    except Exception as e:
+        return {"message": f"Error creating product: {str(e)}"}  # In case of any error during object creation
+
 
 
 @api.post("/worker-output")
