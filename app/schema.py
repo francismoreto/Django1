@@ -13,6 +13,8 @@ class ProductSchema(Schema):
     process : dict[str, str]
     customer : str
     product_family : str
+    action: str
+    process_codes: list[str]
 
 
 class StaticData(Schema):

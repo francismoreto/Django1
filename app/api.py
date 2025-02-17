@@ -39,24 +39,35 @@ def create_product(request, data: ProductSchema):
             "process_codes": ["E151", "E203", "E208", "E205", "E201", "E209"]
         },
         {
-            "part_no": ["9901052019", "9901005015", "9901134012", "2346032", "2346370", "4FBA4411"],
-            "process_codes": ["E151", "E203", "E208", "E205", "E201", "E209", "E324", "E204"]
+            "part_no": ["9901052019", "9901005015", "DTC12130D-B1"],
+            "process_codes": ["E151", "E203", "E208", "E200", "E205", "E201", "E209", "E324"]
         },
         {
-            "part_no": ["DTC12130D-B1", "2424110"],
+            "part_no": "9901134012",
+            "process_codes": ["E151", "E203", "E200", "E208", "E205", "E201", "E209", "E324"]
+        },
+        {
+            "part_no": "2424110",
             "process_codes": ["E151", "E203", "E208", "E205", "E201", "E209", "E324"]
         },
         {
-            "part_no": "2346360",
-            "process_codes": ["E151", "E203", "E208", "E205", "E201"]
+            "part_no": "BT65C202H01",
+            "process_codes": ["E151", "E203", "E208", "E205", "E210", "E211", "E333", "E345", "E334", "E346", "E508", "E515", "E611", "E621"]
         },
         {
-            "part_no": "BT65C202H01",
-            "process_codes": ["E151", "E203", "E208", "E205", "E201", "E209", "E324", "E204", "E515", "E210", "E211", "E333", "E345", "E334", "E346", "E508", "E611", "E621", "E321", "E200", "E325"]
-        }
+            "part_no": "PRA2992-2-7",
+            "process_codes": ["E151", "E203", "E204", "E205", "E201", "E124"]
+        },
+        {
+            "part_no": ["2346032", "2346370", "2346360"],
+            "process_codes": ["E151", "E203", "E208", "E205", "E201", "E209", "E324", "E325"]
+        },
+        {
+            "part_no": "4FBA4411",
+            "process_codes": ["E151", "E203", "E208", "E205", "E201", "E321", "E323", "E324"]
+        },
     ]
 
-    # Process code equivalent on process name
     process_code_mapping = {
         "E151": "Winding wire",
         "E203": "1st Cutting Wire",
@@ -82,65 +93,69 @@ def create_product(request, data: ProductSchema):
         "E325": "Coil taping"
     }
 
-    # Find the part number in the part_numbers list
     part_found = False
     process_codes = []
+    
     for part in part_numbers:
         part_no_list = part["part_no"] if isinstance(part["part_no"], list) else [part["part_no"]]
         
         if data.part_no in part_no_list:
             part_found = True
-            process_codes = part["process_codes"]  # Get the corresponding process codes
+            process_codes = part["process_codes"]
             break
 
     if not part_found:
-        return {"message": "Part number not found."}
-
-    # Validate process codes from the incoming data
+        if data.action == "add":
+       
+            invalid_process_codes = [code for code in data.process_codes if code not in process_code_mapping]
+        if invalid_process_codes:
+            invalid_process_codes_str = [str(code) for code in invalid_process_codes]
+            return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}
     process_codes_to_validate = []
 
     if isinstance(data.process, list):
         for item in data.process:
             if isinstance(item, dict):
-                # Extract process_code from the dictionary
                 process_code = item.get('process_code')
                 if process_code:
                     process_codes_to_validate.append(process_code)
             else:
-                # If it's a direct code, just add it
                 process_codes_to_validate.append(item)
 
-    # Now check for invalid process codes
     invalid_process_codes = [code for code in process_codes_to_validate if code not in process_code_mapping]
     if invalid_process_codes:
         invalid_process_codes_str = [str(code) for code in invalid_process_codes]
-        return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}  # No status code
+        return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}
 
-    # Populate the process list with code and name
     process = [{"process_code": code, "process_name": process_code_mapping[code]} for code in process_codes]
 
     try:
-        # Create the product object
+        new_part = {
+                "part_no": data.part_no,
+                "process_codes": data.process_codes
+            }
+        part_numbers.append(new_part)
         Product.objects.create(
             item_code=data.item_code,
             part_no=data.part_no,
-            process=process,  # Use the validated process codes with names
+            process=[
+                    {"process_code": code, "process_name": process_code_mapping[code]}
+                    for code in data.process_codes
+                ],
             customer=data.customer,
-            product_family=data.product_family,
+            product_family=data.product_family
         )
         return {
-            "message": "Product successfully stored",
-            "item_code": data.item_code,
-            "part_no": data.part_no,
-            "process": process,
-            "customer": data.customer,
-            "product_family": data.product_family
-        }  # No status code
+        "message": "Product successfully stored",
+        "item_code": data.item_code,
+        "part_no": data.part_no,
+        "process": process,
+        "customer": data.customer,
+        "product_family": data.product_family
+    }
 
     except Exception as e:
-        return {"message": f"Error creating product: {str(e)}"}  # In case of any error during object creation
-
-
+        return {"message": f"Error creating product: {str(e)}"}
 
 @api.post("/worker-output")
 def create_output(request, data :WorkerOutputSchema):
