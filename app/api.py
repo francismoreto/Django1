@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from ninja import NinjaAPI
 from .models import Worker,Product,WorkerOutput
-from .schema import WorkerSchema,ProductSchema,WorkerOutputSchema
+from .schema import WorkerSchema,codes,ProductSchema,WorkerOutputSchema
 
 
 api = NinjaAPI()
@@ -105,12 +105,19 @@ def create_product(request, data: ProductSchema):
             break
 
     if not part_found:
+<<<<<<< HEAD
         if data.action == "add":
        
             invalid_process_codes = [code for code in data.process_codes if code not in process_code_mapping]
         if invalid_process_codes:
             invalid_process_codes_str = [str(code) for code in invalid_process_codes]
             return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}
+=======
+        return {"message": "Part number not found."}, 404  # Return a tuple with status code 404
+
+    # Validate process codes from the incoming data
+    # If `data.process` is a list of dictionaries, we need to extract the 'process_code' field first
+>>>>>>> parent of 54b2a66 (Product model working response body)
     process_codes_to_validate = []
 
     if isinstance(data.process, list):
@@ -124,7 +131,9 @@ def create_product(request, data: ProductSchema):
 
     invalid_process_codes = [code for code in process_codes_to_validate if code not in process_code_mapping]
     if invalid_process_codes:
+        # Ensure all invalid process codes are strings before joining them
         invalid_process_codes_str = [str(code) for code in invalid_process_codes]
+<<<<<<< HEAD
         return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}
 
     process = [{"process_code": code, "process_name": process_code_mapping[code]} for code in process_codes]
@@ -146,16 +155,39 @@ def create_product(request, data: ProductSchema):
             product_family=data.product_family
         )
         return {
+=======
+        return {"message": f"Invalid process codes: {', '.join(invalid_process_codes_str)}"}, 400  # Return a tuple with status code 400
+
+    # Populate the process list with code and name
+    process = [{"process_code": code, "process_name": process_code_mapping[code]} for code in process_codes_to_validate]
+
+    # Create the product object
+    Product.objects.create(
+        item_code=data.item_code,
+        part_no=data.part_no,
+        process=process,  # Use the validated process codes with names
+        customer=data.customer,
+        product_family=data.product_family,
+    )
+
+    # Return the success message and status code 201
+    return {
+>>>>>>> parent of 54b2a66 (Product model working response body)
         "message": "Product successfully stored",
         "item_code": data.item_code,
         "part_no": data.part_no,
         "process": process,
         "customer": data.customer,
         "product_family": data.product_family
+<<<<<<< HEAD
     }
 
     except Exception as e:
         return {"message": f"Error creating product: {str(e)}"}
+=======
+    }, 201  # Return a tuple with status code 201
+
+>>>>>>> parent of 54b2a66 (Product model working response body)
 
 @api.post("/worker-output")
 def create_output(request, data :WorkerOutputSchema):
