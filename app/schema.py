@@ -1,6 +1,5 @@
 from ninja import Schema
 from datetime import datetime
-from typing import List, Union
 
 class WorkerSchema(Schema):
     employee_id : str
@@ -9,11 +8,11 @@ class WorkerSchema(Schema):
     username : str
 
 class ProductSchema(Schema):
-    item_code: str
-    part_no: str
-    process: List[Union[dict, str]]  
-    customer: str
-    product_family: str
+    item_code : str
+    part_no : str
+    process : dict[str, str]
+    customer : str
+    product_family : str
 
 
 class StaticData(Schema):
