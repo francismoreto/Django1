@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.core.serializers import serialize
 from ninja import NinjaAPI
 from .models import Worker,Product,WorkerOutput
 from .schema import WorkerSchema,ProductSchema,WorkerOutputSchema
+
 
 
 api = NinjaAPI()
@@ -96,17 +98,22 @@ def create_product(request, data: ProductSchema):
 @api.post("/worker-output")
 def create_output(request, data :WorkerOutputSchema):
     
+    existing_lot = WorkerOutput.objects.filter(lot_no = data.lot_no).first()
 
-    WorkerOutput.objects.create(
+    if existing_lot:
+        existing_lot.output_data.append(data.output_data)
+        existing_lot.current_status = data.current_status
+        existing_lot.save()
+        updated_data = serialize('json', [existing_lot])
+        return {"message": "Output successfully updated", "data": updated_data}
+    else:
+        new_lot = WorkerOutput.objects.create(
         lot_no = data.lot_no,
         current_status = data.current_status,
-        output_data = data.output_data
+        output_data = [data.output_data]
     )
-    return {"message": "Data added successfully",
-            "lot_no": data.lot_no,
-            "current_status": data.current_status,
-            "output_data": data.output_data,
-        }
+        new_data = serialize('json', [new_lot])
+        return {"message": "Data added successfully", "data": new_data}
     
    
 
