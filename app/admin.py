@@ -10,7 +10,11 @@ class ProductAdmin(admin.ModelAdmin):
 
     list_display = ('item_code', 'part_no', 'process', 'customer', 'product_family')
 
+class WorkerOutputAdmin(admin.ModelAdmin):
+
+    list_display = ('lot_no', 'current_status', 'output_data')
+
 admin.site.register(Worker, WorkerAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(WorkerOutput)
+admin.site.register(WorkerOutput, WorkerOutputAdmin)
 
